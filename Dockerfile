@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.18 as builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.21 as builder
 # UPSTREAM_VERSION can be changed, by passing `--build-arg UPSTREAM_VERSION=<new version>` during docker build
 ARG UPSTREAM_VERSION=master
 ENV UPSTREAM_VERSION=${UPSTREAM_VERSION}
@@ -32,7 +32,7 @@ CMD ["--config", "/etc/image-syncer/image-syncer.json"]
 
 
 
-FROM golang:1.12.7 as builder
+FROM golang:1.21.6 as builder
 
 
 FROM alpine:latest
