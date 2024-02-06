@@ -1,4 +1,4 @@
-FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.19 as builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} golang:1.21 as builder
 # UPSTREAM_VERSION can be changed, by passing `--build-arg UPSTREAM_VERSION=<new version>` during docker build
 ARG UPSTREAM_VERSION=master
 ENV UPSTREAM_VERSION=${UPSTREAM_VERSION}
