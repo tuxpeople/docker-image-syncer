@@ -1,4 +1,4 @@
-FROM golang:1.19 as builder
+FROM golang:1.21 as builder
 # UPSTREAM_VERSION can be changed, by passing `--build-arg UPSTREAM_VERSION=<new version>` during docker build
 ARG UPSTREAM_VERSION=master
 ENV UPSTREAM_VERSION=${UPSTREAM_VERSION}
@@ -15,7 +15,7 @@ WORKDIR /go/src/github.com/AliyunContainerService/image-syncer
 RUN wget -nv -O - https://github.com/AliyunContainerService/image-syncer/archive/${UPSTREAM_VERSION}.tar.gz | tar -xz --strip-components=1 && \
     CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} make
 
-FROM alpine:3.19.0
+FROM alpine:3.19.1
 WORKDIR /app/
 # hadolint ignore=DL3018,DL3017
 RUN apk --no-cache upgrade && \
