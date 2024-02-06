@@ -1,0 +1,15 @@
+version: '3.3'
+
+services:
+  registry:
+    container_name: registry
+    restart: always
+    image: registry
+    ports:
+      - 5000:5000
+
+  image-syncer:
+      volumes:
+          - ./.github/workflows/config:/config
+      image: ${IMAGE_SYNCER_IMAGE}
+      command: --proc=6 --auth=/config/test-auth.yml --images=/config/test-images.yml

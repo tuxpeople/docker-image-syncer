@@ -70,20 +70,29 @@ jobs:
     needs: [quick-build]
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      -
-        name: Pull docker image
+      - name: Pull docker image
         id: load
         run: |
           docker pull ${{needs.quick-build.outputs.imagename}}
-      -
-        name: Test docker image
-        id: test
-        env:
-          YTTOKEN : ${{secrets.YTTOKEN}}
-          TESTIMAGE: "${{needs.quick-build.outputs.imagename}}"
-        shell: bash
+      - name: Run docker registry
+        run: docker run -d -p 5000:5000 --restart=always --name registry registry:2
+      - name: Run image-syncer
         run: |
-          test/test.sh
+          apt-get install -y moreutils
+          export IMAGE_SYNCER_IMAGE=${{needs.quick-build.outputs.imagename}}
+          envsubst < docker-compose.yml | sponge docker-compose.yml
+          docker-compose up -d
+          until docker-compose logs image-syncer | grep "Synchronization finished"
+          do
+            echo "Waiting for sync to finish"
+            sleep 2
+          done
+      - name: Use docker to check result
+        run: |
+          docker pull registry:5000/image-syncer-test/alpine:3.18.2 &&
+          docker pull registry:5000/image-syncer-test/olm:v0.18.3 &&
+          docker pull registry:5000/image-syncer-test/hybridnet:v0.8.2 &&
+          docker pull registry:5000/image-syncer-test/hybridnet@sha256:14b267eb38aa85fd12d0e168fffa2d8a6187ac53a14a0212b0d4fce8d729598c &&
+          docker pull registry:5000/image-syncer-test/hybridnet:v0.8.2-test
