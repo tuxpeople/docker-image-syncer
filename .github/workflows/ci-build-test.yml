@@ -80,7 +80,7 @@ jobs:
         run: docker run -d -p 5000:5000 --restart=always --name registry registry:2
       - name: Run image-syncer
         run: |
-          apt-get install -y moreutils
+          sudo apt-get install -y moreutils
           export IMAGE_SYNCER_IMAGE=${{needs.quick-build.outputs.imagename}}
           envsubst < docker-compose.yml | sponge docker-compose.yml
           docker-compose up -d
