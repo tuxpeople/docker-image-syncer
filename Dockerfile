@@ -32,7 +32,7 @@ CMD ["--config", "/etc/image-syncer/image-syncer.json"]
 
 
 
-FROM golang:1.12.7 as builder
+FROM golang:1.12.17 as builder
 
 
 FROM alpine:latest
